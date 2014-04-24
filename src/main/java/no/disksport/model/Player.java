@@ -41,7 +41,7 @@ public class Player implements Serializable {
     @Digits(fraction = 0, integer = 7)
     private String pdga;
 
-    @NotNull
+    //@NotNull
     private PlayerClass playerClass;
 
 
