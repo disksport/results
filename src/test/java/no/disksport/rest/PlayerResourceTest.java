@@ -6,8 +6,22 @@
  */
 package no.disksport.rest;
 
+import static org.junit.Assert.assertEquals;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import no.disksport.model.Player;
 import no.disksport.model.PlayerClass;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -16,15 +30,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author <a href="mailto:stale.pedersen@jboss.org">Ståle W. Pedersen</a>
@@ -36,7 +41,8 @@ public class PlayerResourceTest {
     public static WebArchive createDeployment() {
        return ShrinkWrap.create(WebArchive.class)
              .addClasses(Player.class, PlayerClass.class, PlayerResource.class,
-                     PlayerResourceImpl.class, ResultsApp.class);
+                     PlayerResourceImpl.class, ResultsApp.class)
+             .addAsResource("test-persistence.xml", "META-INF/persistence.xml");
     }
 
     private WebTarget target;
@@ -47,6 +53,7 @@ public class PlayerResourceTest {
     @Before
     public void setUpClass() throws MalformedURLException {
         Client client = ClientBuilder.newClient();
+        client.register(Player.class);
         target = client.target(URI.create(new URL(base, "rest/player").toExternalForm()));
     }
 
@@ -62,7 +69,14 @@ public class PlayerResourceTest {
         p.setActive(true);
         p.setPlayerClass(PlayerClass.ADVANCED);
 
-        //String result = target.request().post(p);
-        //assertEquals("apple", result);
+        Response result = target.request()
+                .accept(MediaType.APPLICATION_XML)
+                .buildPost(Entity.xml(p))
+                .invoke();
+
+        assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
+
+        Player player = result.readEntity(Player.class);
+        assertEquals(p.getFirstName(), player.getFirstName());
     }
 }
