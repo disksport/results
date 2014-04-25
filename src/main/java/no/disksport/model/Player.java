@@ -21,13 +21,13 @@ import java.io.Serializable;
 @XmlRootElement
 @NamedQueries({
         @NamedQuery(name = "findByFirstName",
-                query = "select p from Person p where p.firstName = :firstName"),
+                query = "select p from Player p where p.firstName = :firstName"),
         @NamedQuery(name = "findByLastName",
-                query = "select p from Person p where p.lastName = :lastName"),
+                query = "select p from Player p where p.lastName = :lastName"),
         @NamedQuery(name = "findByPdga",
-                query = "select p from Person p where p.pdga = :pdga"),
+                query = "select p from Player p where p.pdga = :pdga"),
         @NamedQuery(name = "findActivePlayers",
-                query = "select p from Person p where p.active = true")
+                query = "select p from Player p where p.active = true")
 })
 public class Player implements Serializable {
 

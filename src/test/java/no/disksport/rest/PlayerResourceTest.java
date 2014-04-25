@@ -19,6 +19,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import no.disksport.model.Club;
+import no.disksport.model.Municipalicy;
 import no.disksport.model.Player;
 import no.disksport.model.PlayerClass;
 
@@ -41,7 +43,7 @@ public class PlayerResourceTest {
     public static WebArchive createDeployment() {
        return ShrinkWrap.create(WebArchive.class)
              .addClasses(Player.class, PlayerClass.class, PlayerResource.class,
-                     PlayerResourceImpl.class, ResultsApp.class)
+                     PlayerResourceImpl.class, ResultsApp.class, Club.class, Municipalicy.class)
              .addAsResource("test-persistence.xml", "META-INF/persistence.xml");
     }
 
