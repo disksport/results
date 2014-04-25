@@ -3,6 +3,8 @@ package no.disksport.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -17,6 +19,16 @@ import java.io.Serializable;
  */
 @Entity
 @XmlRootElement
+@NamedQueries({
+        @NamedQuery(name = "findByFirstName",
+                query = "select p from Person p where p.firstName = :firstName"),
+        @NamedQuery(name = "findByLastName",
+                query = "select p from Person p where p.lastName = :lastName"),
+        @NamedQuery(name = "findByPdga",
+                query = "select p from Person p where p.pdga = :pdga"),
+        @NamedQuery(name = "findActivePlayers",
+                query = "select p from Person p where p.active = true")
+})
 public class Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,9 +53,10 @@ public class Player implements Serializable {
     @Digits(fraction = 0, integer = 7)
     private String pdga;
 
-    //@NotNull
+    @NotNull
     private PlayerClass playerClass;
 
+    private Club club;
 
     public PlayerClass getPlayerClass() {
         return playerClass;
@@ -93,4 +106,11 @@ public class Player implements Serializable {
         this.id = id;
     }
 
+    public Club getClub() {
+        return club;
+    }
+
+    public void setClub(Club club) {
+        this.club = club;
+    }
 }
