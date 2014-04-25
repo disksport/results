@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AngularJS on JAX-RS</title>
+    <script src="vendor/angular/angular.js"></script>
+    <script src="vendor/angular/angular-mocks.js"></script>
+    <script src="vendor/angular/angular-resource.js"></script>
+    <script src="api-settings.jsp"></script>
+    <script src="app/app.js"></script>
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css"/>
+</head>
+<body ng-app="PlayerApp" ng-controller="PlayerCtrl">
+
+<section id="players" class="container">
+    <button id="add-player" class="btn btn-primary" ng-click="addPlayer()">Add Player</button>
+    <article ng-repeat="player in players" class="Player">
+        <h1><span class="name">{{ player.firstName }}</span>
+            <button class="btn btn-danger" ng-click="remove(player)">-</button>
+        </h1>
+
+        <div class="summary">{{ player.pdga }}</div>
+    </article>
+</section>
+
+<div id="edit-player-modal" class="modal fade" tabindex="-1" role="dialog" ng-class="{'in show':isEditPlayerMode()}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Player</h4>
+            </div>
+            <div class="modal-body">
+                <form id="edit-player-form" ng-submit="save()">
+                    <input type="text" ng-model="selectedPlayer.firstName" placeholder="First name" class="form-control" required/>
+                    <input type="text" ng-model="selectedPlayer.lastName" placeholder="Last Name" class="form-control" required/>
+                    <input type="text" ng-model="selectedPlayer.pdga" placeholder="PDGA" class="form-control" required/>
+                    <button class="btn btn-primary" type="submit">Save</button>
+                    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
