@@ -11,11 +11,13 @@ import static org.junit.Assert.assertEquals;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -59,14 +61,11 @@ public class PlayerResourceTest {
         target = client.target(URI.create(new URL(base, "rest/player").toExternalForm()));
     }
 
-    /**
-     * Test of getList method, of class MyResource.
-     */
     @Test
     public void testCreatePlayer() {
         Player p = new Player();
-        p.setFirstName("foo");
-        p.setLastName("bar");
+        p.setFirstName("store");
+        p.setLastName("petterson");
         p.setPdga("1234");
         p.setActive(true);
         p.setPlayerClass(PlayerClass.ADVANCED);
@@ -81,4 +80,53 @@ public class PlayerResourceTest {
         Player player = result.readEntity(Player.class);
         assertEquals(p.getFirstName(), player.getFirstName());
     }
+
+    @Test
+    public void testListPlayers() throws MalformedURLException {
+        Player p = new Player();
+        p.setFirstName("esben");
+        p.setLastName("moglad");
+        p.setPdga("1234");
+        p.setActive(true);
+        p.setPlayerClass(PlayerClass.ADVANCED);
+
+        Response result = target
+                .request()
+                .accept(MediaType.APPLICATION_XML)
+                .buildPost(Entity.xml(p))
+                .invoke();
+
+        assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
+
+        WebTarget target2 = ClientBuilder
+                .newClient()
+                .register(Player.class)
+                .target(URI.create(new URL(base, "rest/player").toExternalForm()));
+
+        List<Player> players = target2
+                .request()
+                .accept(MediaType.APPLICATION_XML)
+                .get(new GenericType<List<Player>>(){});
+
+        assertEquals(2, players.size());
+    }
+
+    @Test
+    public void findByFirstName() throws MalformedURLException {
+        WebTarget target = ClientBuilder
+                .newClient()
+                .register(Player.class)
+                .target(URI.create(new URL(base, "rest/player").toExternalForm()));
+
+        target.resolveTemplate("{firstName}", "store");
+
+        List<Player> players = target
+                .request()
+                .accept(MediaType.APPLICATION_XML)
+                .get(new GenericType<List<Player>>(){});
+
+        assertEquals("petterson", players.get(0).getLastName());
+    }
+
+
 }

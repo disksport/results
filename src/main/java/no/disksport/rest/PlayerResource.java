@@ -25,6 +25,10 @@ public interface PlayerResource {
     @Path("/")
     List<Player> getPlayers();
 
+    @GET
+    @Path("/{firstName}")
+    List getPlayersByFirstName(@PathParam("firstName") String firstName);
+
     @DELETE
     @Path("/{id}")
     void removePlayer(@PathParam("id") Long playerId);

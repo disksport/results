@@ -29,6 +29,11 @@ public class PlayerResourceImpl implements PlayerResource {
     }
 
     @Override
+    public List<Player> getPlayersByFirstName(String firstName) {
+        return entityManager.createNamedQuery("Player.findByFirstName").setParameter("firstName", firstName).getResultList();
+    }
+
+    @Override
     public void removePlayer(Long playerId) {
         final Player player = entityManager.find(Player.class, playerId);
         if(player != null)
